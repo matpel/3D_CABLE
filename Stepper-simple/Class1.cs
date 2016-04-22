@@ -18,6 +18,7 @@ namespace Move_cable
         public double derive;
         public double Goal_Position;
         public Stepper stepper;
+        public double delta_L;
         static bool tourne;
         public MyStepper(int id, int init_pos = 0)
         {
@@ -132,10 +133,10 @@ namespace Move_cable
         }
         public void load_trajectory()
         {
-            string[] lines = System.IO.File.ReadAllLines(@"C:\Users\lcort_000\Desktop\coords" + id_motor.ToString()+ ".txt");
+            string[] lines = System.IO.File.ReadAllLines(@"D:\Projets\Departement\Systeme_rail_rhino\coords" + id_motor.ToString()+ ".txt");
             foreach (string line in lines)
             {
-                liste.Add(Convert.ToDouble(line.Replace('.', ',')));
+                liste.Add(Convert.ToDouble(line.Replace(',', '.')));
             }
 
 
@@ -193,6 +194,13 @@ namespace Move_cable
         public bool isAttached()
         {
             return stepper.Attached;
+        }
+
+        public void correct(double L_ensg, int t)
+        {
+            if (t <= liste.Count)
+                delta_L += liste[t] - L_ensg;
+            else Console.WriteLine("Erreur timestamp lors de la correction du moteur "+id_motor.ToString());
         }
     }
 }
